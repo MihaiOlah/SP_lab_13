@@ -1,6 +1,10 @@
 package Spring.models;
 
+import services.Observer;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.Collections;
 import java.util.List;
@@ -8,8 +12,9 @@ import java.util.ArrayList;
 
 
 @Entity
-public class Section extends Element implements Visitee {
+public class Section extends Element implements Visitee, Observable {
     protected String title_;
+    protected transient List<Observer> observers_;
     @OneToMany
     protected List<Element> content_;
 
@@ -17,24 +22,28 @@ public class Section extends Element implements Visitee {
     {
         title_ = "";
         content_ = new ArrayList<>();
+        observers_ = new ArrayList<>();
     }
 
     public Section(String title)
     {
         title_ = title;
         content_ = new ArrayList<>();
+        observers_ = new ArrayList<>();
     }
 
     public Section(String title, List<Element> content)
     {
         title_ = title;
         content_ = new ArrayList<>(content);
+        observers_ = new ArrayList<>();
     }
 
     public Section(Section section)
     {
         title_ = section.title_;
         content_ = new ArrayList<>(section.content_);
+        observers_ = new ArrayList<>();
     }
 
     private <T> boolean containsObject(List<T> list, T object)
@@ -135,6 +144,30 @@ public class Section extends Element implements Visitee {
     @Override
     public <T> T accept(Visitor<T> visitor) {
        return visitor.visitSection(this);
+    }
+
+    public void setNewValue(String newValue)
+    {
+        title_ = newValue;
+        notifyObservers();
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers_.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers_.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer obs : observers_)
+        {
+            obs.update(title_);
+        }
     }
 
 //    @Override

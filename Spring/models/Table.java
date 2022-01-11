@@ -1,9 +1,14 @@
 package Spring.models;
 
+import services.Observer;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Table extends Element implements Visitee {
-    private final String title_;
+public class Table extends Element implements Visitee, Observable {
+    private String title_;
+    protected transient List<Observer> observers_;
 
     public Table(String title)
     {
@@ -11,6 +16,8 @@ public class Table extends Element implements Visitee {
             title_ = title;
         else
             title_ = "";
+
+        observers_ = new ArrayList<>();
     }
 
     public Table(Table table)
@@ -41,5 +48,29 @@ public class Table extends Element implements Visitee {
     @Override
     public <T> T accept(Visitor<T> visitor) {
         return visitor.visitTable(this);
+    }
+
+    public void setNewValue(String newValue)
+    {
+        title_ = newValue;
+        notifyObservers();
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers_.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers_.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer obs : observers_)
+        {
+            obs.update(title_);
+        }
     }
 }

@@ -44,6 +44,11 @@ public class TableOfContents extends Element implements Visitee {
         return visitor.visitTableOfContents(this);
     }
 
+    public void setNewValue(String newValue)
+    {
+
+    }
+
 //    @Override
 //    public void accept(BookStatistics bookStatistics) {
 //        throw new UnsupportedOperationException();

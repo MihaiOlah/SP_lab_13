@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 public class ImageProxy extends Element implements Picture, Visitee {
-    private final String url_;
+    private String url_;
     private final Dimension dim_;
     @Transient
     private Image realImage_;
@@ -90,6 +90,11 @@ public class ImageProxy extends Element implements Picture, Visitee {
     public Element getDocument()
     {
         throw new UnsupportedOperationException();
+    }
+
+    public void setNewValue(String newValue)
+    {
+        url_ = newValue;
     }
 
     @Override

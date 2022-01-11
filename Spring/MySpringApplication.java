@@ -1,44 +1,43 @@
 package Spring;
 
-import Spring.controllers.HelloController;
-import Spring.difexample.ClientComponent;
-import Spring.difexample.SingletonComponent;
-import Spring.difexample.TransientComponent;
-import org.springframework.boot.SpringApplication;
+
+import Spring.models.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
+import services.FirstObserver;
+import services.SecondObserver;
 
 @SpringBootApplication
 public class MySpringApplication {
     public static void main(String[] args) {
-//
-// Run this main function and inspect the output console to learn about
-// the lifecycle of objects within Spring Dependency Injection Context
-//
-// Gets a handle of dependency injection context
-        ApplicationContext context = SpringApplication.run(MySpringApplication.class, args);
-// Gets an instance of TransientComponent from the DI context
-        //TransientComponent transientBean = context.getBean(TransientComponent.class);
-        //transientBean.operation();
-// Note that every time an instance is required, the DI context creates a new one
-        //transientBean = context.getBean(TransientComponent.class);
-        //transientBean.operation();
-// Gets an instance of SingletonComponent from the DI context
-// Note that the unique instance was created while application was loaded, before creating
-// transient instances
+        Section cap1 = new Section("Capitolul 1");
+        Paragraph p1 = new Paragraph("Paragraph 1");
+        cap1.add(p1);
+        Paragraph p2 = new Paragraph("Paragraph 2");
+        cap1.add(p2);
+        Paragraph p3 = new Paragraph("Paragraph 3");
+        cap1.add(p3);
+        Paragraph p4 = new Paragraph("Paragraph 4");
+        cap1.add(p4);
+        cap1.add(new ImageProxy("ImageOne"));
+        cap1.add(new Image("ImageTwo"));
+        cap1.add(new Paragraph("Some text"));
+        cap1.add(new Table("Table 1"));
+        //System.out.println(cap1.getTitle());
 
-        //SingletonComponent singletonBean = context.getBean(SingletonComponent.class);
-        //singletonBean.operation();
-// Note that every time an instance is required, the DI returns the same unique one
-        //singletonBean = context.getBean(SingletonComponent.class);
-        //singletonBean.operation();
-// Gets an instance of another class that requires singleton/transient components
-// Note where this instance was created and what beans were used toinitialize it
-        //ClientComponent c = context.getBean(ClientComponent.class);
-        // c.operation();
-// One can also request an instance from DI context by name
-        //c = (ClientComponent)context.getBean("clientComponent");
-        //c.operation();
+        FirstObserver firstObserver = new FirstObserver();
+        SecondObserver secondObserver = new SecondObserver();
+        cap1.addObserver(firstObserver);
+        cap1.addObserver(secondObserver);
 
+        p1.addObserver(firstObserver);
+        p1.addObserver(secondObserver);
+        p2.addObserver(firstObserver);
+
+        cap1.setNewValue("CHAPTER 1");
+        p1.setNewValue("PARAGRAPH 2");
+        p2.setNewValue("PARAGRAPH 3");
+
+        cap1.removeObserver(firstObserver);
+        cap1.setNewValue("CHAPTER 1.1");
     }
 }
